@@ -1,44 +1,35 @@
 # xiaozhi-esp32-selfhost-playbook
 
-Public-safe notes, examples, and deployment ideas for self-hosting custom routing on `xiaozhi-esp32`.
+[Chinese Version](./README_zh.md)
 
-## Upstream Reference
+This repository records how I think about self-hosted routing around `xiaozhi-esp32` deployments.
 
-This repository is based on exploration work around the upstream project:
+When I run ESP32 voice devices against local or self-managed services, the practical problem is usually not the hardware itself but the routing strategy: where OTA checks go, which WebSocket endpoint gets used, and what should happen when runtime settings are incomplete.
 
-- Upstream repository: [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)
-- Upstream description: `An MCP-based chatbot`
-- Upstream license: `MIT`
+## Upstream
 
-This repo does **not** mirror or republish the full upstream codebase. It is a clean, portfolio-safe companion repository that documents a custom self-host routing approach inspired by real integration work.
+- Repository: [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)
+- Description: `An MCP-based chatbot`
+- License observed: `MIT`
 
-## What This Repo Focuses On
+The upstream project is the right starting point for actual firmware work. This repository keeps the notes, config patterns, and small reusable examples that grew out of my deployment-side experimentation.
 
-- adding a configurable OTA endpoint for self-hosted environments
-- adding a configurable WebSocket endpoint for self-hosted environments
-- providing a fallback routing strategy when runtime settings are empty
-- documenting a clean publication pattern that avoids exposing private endpoints and secrets
+## What I keep here
 
-## Why It Exists
+- OTA and WebSocket fallback ideas for self-hosted environments
+- routing notes for local network and private deployment setups
+- sanitized configuration examples
+- small clean-room snippets for URL resolution logic
 
-I used `xiaozhi-esp32` as the upstream reference for ESP32 AI device experimentation. One practical problem in local deployment is that devices often need to switch from public defaults to private self-hosted services during development, testing, or LAN demos.
+## Repository structure
 
-This playbook turns that idea into a reusable public artifact:
+- [`docs/upstream-notes.md`](./docs/upstream-notes.md) upstream relationship and customization scope
+- [`docs/selfhost-routing-strategy.md`](./docs/selfhost-routing-strategy.md) routing design and fallback order
+- [`examples/sdkconfig.defaults.example`](./examples/sdkconfig.defaults.example) example config values
+- [`examples/url_resolution_example.cpp`](./examples/url_resolution_example.cpp) minimal fallback logic
+- [`NOTICE.md`](./NOTICE.md) attribution and release boundary
 
-- architecture notes
-- configuration templates
-- clean-room example logic
-- release hygiene checklist
-
-## Repository Structure
-
-- [`docs/upstream-notes.md`](./docs/upstream-notes.md): what was confirmed from upstream and what kind of customization this playbook describes
-- [`docs/selfhost-routing-strategy.md`](./docs/selfhost-routing-strategy.md): self-host routing strategy and implementation ideas
-- [`examples/sdkconfig.defaults.example`](./examples/sdkconfig.defaults.example): sanitized configuration example
-- [`examples/url_resolution_example.cpp`](./examples/url_resolution_example.cpp): clean-room sample logic for URL fallback resolution
-- [`NOTICE.md`](./NOTICE.md): attribution and publication boundary
-
-## Routing Model
+## Routing model
 
 ```mermaid
 flowchart TD
@@ -47,39 +38,35 @@ flowchart TD
     C --> D{"Runtime WebSocket URL present?"}
     D -- "Yes" --> E["Use runtime URL"]
     D -- "No" --> F["Use configured fallback URL"]
-    E --> G["Connect to self-hosted or managed service"]
+    E --> G["Connect to the target service"]
     F --> G
 ```
 
-## Typical Use Cases
+## Why I keep this split out
 
-- classroom or lab demos with LAN-deployed services
-- internal testing against self-hosted OTA and WebSocket gateways
-- portfolio documentation for embedded AI integration ability
-- environment-specific build variants without publishing private infrastructure
+Keeping deployment notes separate from the firmware itself makes a few things easier:
 
-## Quick Start
+- firmware branches stay focused on code
+- routing assumptions stay documented in one place
+- local and self-hosted setups are easier to revisit later
+- sensitive endpoints and private configs stay out of the repo
 
-1. Read [`docs/upstream-notes.md`](./docs/upstream-notes.md) to understand the upstream relationship.
-2. Copy the sanitized patterns from [`examples/sdkconfig.defaults.example`](./examples/sdkconfig.defaults.example).
-3. Adapt the fallback logic shown in [`examples/url_resolution_example.cpp`](./examples/url_resolution_example.cpp) to your own fork or private branch.
-4. Replace placeholder addresses with your own local or cloud endpoints.
-5. Keep tokens, internal IPs, and deployment-only configs out of public repositories.
+## Typical use cases
 
-## Portfolio Value
+- LAN demos with self-hosted gateways
+- local testing against internal OTA and WebSocket services
+- switching between managed and self-managed service targets
+- keeping fallback behavior predictable during development
 
-This repository is designed to showcase:
+## Quick start
 
-- ESP32 integration thinking
-- AI hardware deployment awareness
-- self-host routing design
-- clean public documentation habits
-- respect for upstream attribution and open-source boundaries
+1. Read [`docs/upstream-notes.md`](./docs/upstream-notes.md)
+2. Review the fallback order in [`docs/selfhost-routing-strategy.md`](./docs/selfhost-routing-strategy.md)
+3. Copy the config style from [`examples/sdkconfig.defaults.example`](./examples/sdkconfig.defaults.example)
+4. Adapt the sample logic in [`examples/url_resolution_example.cpp`](./examples/url_resolution_example.cpp) to your own branch
 
-## Publication Note
+## Note
 
-If you want to build a production fork, start from the upstream repository instead of this documentation repo:
+If you want to build or ship firmware, start from the upstream repository:
 
 - [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)
-
-This repository is intentionally lightweight and documentation-first.
