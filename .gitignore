@@ -1,0 +1,22 @@
+# build output
+build/
+dist/
+
+# esp-idf local files
+sdkconfig
+sdkconfig.old
+
+# editors
+.vscode/
+.idea/
+
+# secrets and local overrides
+.env
+.env.*
+local/
+secrets.env
+
+# binaries
+*.bin
+*.elf
+*.map

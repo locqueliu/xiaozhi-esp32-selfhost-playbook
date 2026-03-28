@@ -1,0 +1,2 @@
+CONFIG_OTA_URL="http://127.0.0.1:8003/xiaozhi/ota/"
+CONFIG_WEBSOCKET_URL="ws://127.0.0.1:8000/xiaozhi/v1/"
