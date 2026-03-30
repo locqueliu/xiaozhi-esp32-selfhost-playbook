@@ -1,3 +1,5 @@
+![Repo banner](./assets/repo-banner.svg)
+
 # xiaozhi-esp32-selfhost-playbook
 
 [English Version](./README.md)
